@@ -11,15 +11,18 @@ import (
 )
 
 var (
+	diffSim    string
 	diffTest   string
 	diffClient string
 	diffFull   bool
 )
 
 var diffCmd = &cobra.Command{
-	Use:   "diff <run-file>",
+	Use:   "diff [run-file]",
 	Short: "Show colorized diff for failing tests",
-	Args:  cobra.ExactArgs(1),
+	Long: `Show colorized diff for failing tests. If no run-file is given, uses the
+most recent run matching the --sim and --client filters.`,
+	Args: cobra.MaximumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		diffClient = api.ResolveClientAlias(diffClient)
 
@@ -28,7 +31,23 @@ var diffCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := client.FetchResult(args[0])
+		var fileName string
+		if len(args) > 0 {
+			fileName = args[0]
+		} else {
+			entries, err := client.FetchListing(diffSim, diffClient, 0)
+			if err != nil {
+				return fmt.Errorf("fetching listing: %w", err)
+			}
+			if len(entries) == 0 {
+				return fmt.Errorf("no runs found matching filters")
+			}
+			api.SortByTime(entries)
+			fileName = entries[0].FileName
+			fmt.Printf("Using most recent run: %s\n\n", fileName)
+		}
+
+		result, err := client.FetchResult(fileName)
 		if err != nil {
 			return fmt.Errorf("fetching result: %w", err)
 		}
@@ -93,6 +112,7 @@ var diffCmd = &cobra.Command{
 }
 
 func init() {
+	diffCmd.Flags().StringVar(&diffSim, "sim", "", "Filter runs by simulator name")
 	diffCmd.Flags().StringVar(&diffTest, "test", "", "Filter by test name (glob pattern)")
 	diffCmd.Flags().StringVar(&diffClient, "client", "", "Filter by client name")
 	diffCmd.Flags().BoolVar(&diffFull, "full", false, "Show full output instead of only differences")
