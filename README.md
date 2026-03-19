@@ -16,6 +16,14 @@ go install github.com/s1na/hq@latest
 hq suites
 ```
 
+### List clients and aliases
+
+```
+hq clients
+```
+
+The `--client` flag accepts shorthand aliases anywhere. For example, `--client geth` resolves to `go-ethereum`, `--client nimbus` to `nimbus-el`.
+
 ### List recent runs
 
 ```

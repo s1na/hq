@@ -20,6 +20,8 @@ var diffCmd = &cobra.Command{
 	Short: "Show colorized diff for failing tests",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		diffClient = api.ResolveClientAlias(diffClient)
+
 		client, err := newClient()
 		if err != nil {
 			return err

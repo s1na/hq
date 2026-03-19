@@ -22,6 +22,7 @@ var statsCmd = &cobra.Command{
 		if statsSim == "" {
 			return fmt.Errorf("--sim flag is required")
 		}
+		statsClient = api.ResolveClientAlias(statsClient)
 
 		client, err := newClient()
 		if err != nil {

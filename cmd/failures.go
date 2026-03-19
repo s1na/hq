@@ -22,6 +22,8 @@ var failuresCmd = &cobra.Command{
 	Long: `Show failing tests. If no run-file is given, uses the most recent run
 matching the --sim and --client filters.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		failuresClient = api.ResolveClientAlias(failuresClient)
+
 		client, err := newClient()
 		if err != nil {
 			return err

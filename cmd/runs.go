@@ -19,6 +19,8 @@ var runsCmd = &cobra.Command{
 	Use:   "runs",
 	Short: "List recent test runs",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		runsClient = api.ResolveClientAlias(runsClient)
+
 		client, err := newClient()
 		if err != nil {
 			return err
