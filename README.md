@@ -53,11 +53,17 @@ hq failures 1710000000-rpc-compat.json
 ### View result diffs
 
 ```
-# Show diffs for all geth failures in a run
-hq diff 1710000000-rpc-compat.json --client geth
+# Diffs for besu failures in the most recent rpc-compat run
+hq diff --sim rpc-compat --client besu
 
-# Show diff for a specific test
-hq diff 1710000000-rpc-compat.json --client geth --test "eth_getStorageAt*"
+# Narrow down to a specific test
+hq diff --sim rpc-compat --client besu --test "debug_getRawHeader/*"
+
+# Show full output (including raw request/response) instead of compact diffs
+hq diff --sim rpc-compat --client besu --full
+
+# Diff a specific run file
+hq diff 1710000000-xxx.json --client geth
 ```
 
 ### Pass/fail stats across runs
@@ -75,14 +81,20 @@ hq stats --sim rpc-compat --client geth --last 20
 
 ### Example workflow
 
-Find out which rpc-compat tests geth is failing and inspect the diffs:
+Find out which rpc-compat tests besu is failing and inspect the diffs:
 
 ```bash
-# 1. List geth's failures in the most recent rpc-compat run
-hq failures --sim rpc-compat --client geth
+# 1. See how each client is faring
+hq stats --sim rpc-compat
 
-# 2. Note the run file from the output, then view the diffs
-hq diff <run-file> --client geth
+# 2. List besu's failures
+hq failures --sim rpc-compat --client besu
+
+# 3. See the diffs for all failures
+hq diff --sim rpc-compat --client besu
+
+# 4. Narrow down to a specific test
+hq diff --sim rpc-compat --client besu --test "debug_getRawHeader/*"
 ```
 
 ## Global flags
