@@ -13,6 +13,7 @@ import (
 var (
 	diffTest   string
 	diffClient string
+	diffFull   bool
 )
 
 var diffCmd = &cobra.Command{
@@ -76,7 +77,11 @@ var diffCmd = &cobra.Command{
 
 			matched++
 			display.Bold.Printf("=== %s ===\n", tc.Name)
-			display.ColorizeDiff(log, noColor)
+			if diffFull {
+				display.ColorizeDiff(log, noColor)
+			} else {
+				display.CompactDiff(log, 3, noColor)
+			}
 			fmt.Println()
 		}
 
@@ -90,5 +95,6 @@ var diffCmd = &cobra.Command{
 func init() {
 	diffCmd.Flags().StringVar(&diffTest, "test", "", "Filter by test name (glob pattern)")
 	diffCmd.Flags().StringVar(&diffClient, "client", "", "Filter by client name")
+	diffCmd.Flags().BoolVar(&diffFull, "full", false, "Show full output instead of only differences")
 	rootCmd.AddCommand(diffCmd)
 }
