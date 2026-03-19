@@ -6,7 +6,6 @@ import "strings"
 var clientAliases = map[string]string{
 	"geth":       "go-ethereum",
 	"nimbus":     "nimbus-el",
-	"neth":       "nethermind",
 	"nethermind": "nethermind",
 	"besu":       "besu",
 	"reth":       "reth",
